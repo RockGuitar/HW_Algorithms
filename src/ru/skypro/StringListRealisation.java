@@ -6,178 +6,191 @@ import ru.skypro.Exceptions.ItemNotFoundException;
 import ru.skypro.Exceptions.ParameterIsNullException;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-public class StringListRealisation implements StringList{
-    public int arrayLength;
-    public int arraySize;
-    public final String defaultString = "###";
-    public String[] arrayStr;
-    public StringListRealisation(int arrayLength){
-        this.arrayLength = arrayLength;
-        this.arraySize = 0;
-        this.arrayStr = new String[arrayLength];
-        Arrays.fill(arrayStr,defaultString);
-    }
+public class StringListRealisation implements StringList {
+    public static int arraySize = 0;
+    public static int numberOfElements = 7;
+    public String[] arrayStr = new String[numberOfElements];
 
     @Override
     public String toString () {
         return "Contents of your array: " + Arrays.toString(arrayStr);
     }
 
-    public String add( String item){
-        if (arraySize>=arrayLength){
-            throw new ArrayIsFullException();
-        }else if(item==defaultString|item==null){
+    public static void checkItem ( String item ) {
+        if (item == null) {
             throw new ParameterIsNullException();
         }
-        boolean addCheck = false;
-        for (int i = 0; i < arrayLength-1; i++) {
-            if(arrayStr[i]==defaultString){
+    }
+
+    public static void checkIndex ( int index ) {
+        if (index >= numberOfElements | index < 0) {
+            throw new IndexOutOfArrayLengthException();
+        }
+    }
+
+    public static void checkSize () {
+        if (arraySize >= numberOfElements) {
+            throw new ArrayIsFullException();
+        }
+    }
+
+    public void checkIndexItem ( int index ) {
+        if (arrayStr[index] == null) {
+            throw new ItemNotFoundException();
+        }
+    }
+
+    //Метод "add" находит первую попавшуюся ячейку где есть null и ставит в нее добавляемый элемент, таким образом
+    //даже если между элементами в массиве будет пусто, сначала метод добавит элементы в пустые места
+    public String add ( String item ) {
+        checkItem(item);
+        checkSize();
+        for (int i = 0; i < numberOfElements-1; i++) {
+            if(arrayStr[i]==null){
                 arrayStr[i]=item;
                 arraySize++;
-                addCheck=true;
                 break;
             }
         }
-        if(!addCheck){
-            throw new ArrayIsFullException();
-        }
         return item;
     }
-    public String add(int index, String item){
-        if (index>=arrayLength){
-            throw new IndexOutOfArrayLengthException();
-        }
-        else if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        boolean moveCheck = false;
-        for (int i = index; i < arrayLength -1; i++) {
-            if(arrayStr[i+1]==defaultString){
-                for (int j = i+1; j >index; j--) {
-                    arrayStr[j]=arrayStr[j-1];
-                }
-                arrayStr[index] = item;
-                arraySize++;
-                moveCheck = true;
-                break;
-            }else{
-                continue;
-            }
-        }
-        if(!moveCheck){
-            throw new ArrayIsFullException();
-        }
-        return item;
-    }
-    public String set(int index, String item){
-        if (index>=arrayLength){
-            throw new IndexOutOfArrayLengthException();
-        }
-        else if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        if(arrayStr[index]==defaultString){
+
+    public String set ( int index, String item ) {
+        checkItem(item);
+        checkIndex(index);
+        if (arrayStr[index] == null) {
             arraySize++;
         }
         arrayStr[index] = item;
         return item;
     }
-    public String remove(String item){
-        if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        boolean found = false;
-        for (int i = 0; i < arrayLength-1; i++) {
-            if (arrayStr[i]==item){
-                found = true;
-                arrayStr[i] = defaultString;
-                arraySize--;
+
+    public String add ( int index, String item ) {
+        checkItem(item);
+        checkIndex(index);
+        checkSize();
+        if (arrayStr[index] == null) {
+            set(index, item);
+        } else {
+            for (int i = index; i < numberOfElements - 1; i++) {
+                if (arrayStr[i + 1] == null) {
+                    for (int j = i + 1; j > index; j--) {
+                        arrayStr[j] = arrayStr[j - 1];
+                    }
+                    arrayStr[index] = item;
+                    arraySize++;
+                    break;
+                }
             }
         }
-        if(!found){
+        return item;
+    }
+
+    public String remove ( int index ) {
+        checkIndex(index);
+        checkIndexItem(index);
+        String deletedString = arrayStr[index];
+        for (int i = index; i < numberOfElements - 1; i++) {
+            arrayStr[i] = arrayStr[i + 1];
+        }
+        arraySize--;
+        return deletedString;
+    }
+
+    public String remove ( String item ) {
+        checkItem(item);
+        boolean found = false;
+        for (int i = 0; i < numberOfElements - 1; i++) {
+            if (item.equals(arrayStr[i])) {
+                remove(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found){
             throw new ItemNotFoundException();
         }
         return item;
     }
-    public String remove ( int index ) {
-        if (arrayStr[index] == defaultString) {
-            throw new ItemNotFoundException();
-        } else {
-            String deletedString = arrayStr[index];
-            arrayStr[index] = defaultString;
-            arraySize--;
-            return deletedString;
-        }
-    }
-    public boolean contains(String item){
-        if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        boolean contains = false;
-        for (int i = 0; i < arrayLength-1; i++) {
-            if(arrayStr[i]==item){
-                contains=true;
+
+    public boolean contains ( String item ) {
+        checkItem(item);
+        for (String string : arrayStr) {
+            if (string == item) {
+                return true;
             }
         }
-        return contains;
+        return false;
     }
-    public int indexOf(String item){
-        if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        int searchIndex =-1;
-        for (int i = 0; i < arrayLength-1; i++) {
-            if(arrayStr[i]==item){
+
+    public int indexOf ( String item ) {
+        checkItem(item);
+        int searchIndex = -1;
+        for (int i = 0; i < numberOfElements - 1; i++) {
+            if (arrayStr[i] == item) {
                 searchIndex = i;
             }
         }
         return searchIndex;
     }
-    public int lastIndexOf(String item){
-        if(item==defaultString|item==null){
-            throw new ParameterIsNullException();
-        }
-        int searchIndex =-1;
-        for (int i = arrayLength -1; i > -1; i--) {
-            if(arrayStr[i]==item){
+
+    public int lastIndexOf ( String item ) {
+        checkItem(item);
+        int searchIndex = -1;
+        for (int i = numberOfElements - 1; i > -1; i--) {
+            if (arrayStr[i] == item) {
                 searchIndex = i;
             }
         }
         return searchIndex;
     }
-    public String get(int index){
-        if (index>=arrayLength){
-            throw new IndexOutOfArrayLengthException();
-        }
+
+    public String get ( int index ) {
+        checkIndex(index);
         return arrayStr[index];
     }
-    public void clear(){
-        for (int i = 0; i < arrayLength-1; i++) {
-            arrayStr[i]=defaultString;
-        }
-        arraySize=0;
+
+    public void clear () {
+        arrayStr = new String[numberOfElements];
+        arraySize = 0;
     }
-    public int size (){
+
+    public int size () {
         return arraySize;
-    };
-    public boolean isEmpty (){
-        if(arraySize==0){
-            return true;
-        }else{
-            return false;
-        }
     }
-    public boolean equals ( StringList otherList ){
-        if(otherList==null){
+
+    public boolean isEmpty () {
+        return arraySize == 0;
+    }
+    public String[] toArray () {
+        String[] otherArray = new String[numberOfElements];
+        for (int i = 0; i < numberOfElements-1; i++) {
+            otherArray[i] = this.get(i);
+        }
+        return otherArray;
+    }
+    public boolean equalArrays(String[] arrayOne, String[] arrayTwo){
+        return Arrays.equals(arrayOne,arrayTwo);
+    }
+    @Override
+    public boolean equals (StringList otherList) {
+        boolean equality = true;
+        if (otherList == null) {
             throw new ParameterIsNullException();
         }
-        return Arrays.equals(arrayStr,otherList.toArray());
+        if(arraySize != otherList.size()){
+            return false;
+        }else{
+            for (int i = 0; i < numberOfElements-1; i++) {
+                if(!equalArrays(this.arrayStr,otherList.toArray())){
+                    equality=false;
+                    break;
+                }
+            }
+        }
+
+        return equality;
     }
-    public String[] toArray(){
-        return Arrays.copyOf(arrayStr,arrayLength);
-    }
+
 }
