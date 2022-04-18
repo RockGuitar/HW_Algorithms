@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main ( String[] args ) {
         StringListRealisation myArray = new StringListRealisation();
         myArray.add("Item1");
         myArray.add("Item2");
         System.out.println(myArray.toString());
-        myArray.set(3,"Item4");
+        myArray.set(3, "Item4");
         myArray.add("Item3");
         System.out.println(myArray.toString());
         myArray.add(3, "Item5");
@@ -28,7 +28,7 @@ public class Main {
         System.out.println("myArray.contains(\"Item2\") = " + myArray.contains("Item2"));
         System.out.println("myArray.contains(\"anyitem\") = " + myArray.contains("anyitem"));
         StringListRealisation otherArray = new StringListRealisation();
-        otherArray.arrayStr = Arrays.copyOf(myArray.arrayStr,StringListRealisation.numberOfElements);
+        otherArray.arrayStr = Arrays.copyOf(myArray.arrayStr, StringListRealisation.numberOfElements);
         System.out.println(otherArray.toString());
         System.out.println("myArray.equals(otherArray) = " + myArray.equals(otherArray));
         StringListRealisation thirdArray = new StringListRealisation();

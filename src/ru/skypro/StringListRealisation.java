@@ -46,9 +46,9 @@ public class StringListRealisation implements StringList {
     public String add ( String item ) {
         checkItem(item);
         checkSize();
-        for (int i = 0; i < numberOfElements-1; i++) {
-            if(arrayStr[i]==null){
-                arrayStr[i]=item;
+        for (int i = 0; i < numberOfElements - 1; i++) {
+            if (arrayStr[i] == null) {
+                arrayStr[i] = item;
                 arraySize++;
                 break;
             }
@@ -108,7 +108,7 @@ public class StringListRealisation implements StringList {
                 break;
             }
         }
-        if (!found){
+        if (!found) {
             throw new ItemNotFoundException();
         }
         return item;
@@ -163,28 +163,31 @@ public class StringListRealisation implements StringList {
     public boolean isEmpty () {
         return arraySize == 0;
     }
+
     public String[] toArray () {
         String[] otherArray = new String[numberOfElements];
-        for (int i = 0; i < numberOfElements-1; i++) {
+        for (int i = 0; i < numberOfElements - 1; i++) {
             otherArray[i] = this.get(i);
         }
         return otherArray;
     }
-    public boolean equalArrays(String[] arrayOne, String[] arrayTwo){
-        return Arrays.equals(arrayOne,arrayTwo);
+
+    public boolean equalArrays ( String[] arrayOne, String[] arrayTwo ) {
+        return Arrays.equals(arrayOne, arrayTwo);
     }
+
     @Override
-    public boolean equals (StringList otherList) {
+    public boolean equals ( StringList otherList ) {
         boolean equality = true;
         if (otherList == null) {
             throw new ParameterIsNullException();
         }
-        if(arraySize != otherList.size()){
+        if (arraySize != otherList.size()) {
             return false;
-        }else{
-            for (int i = 0; i < numberOfElements-1; i++) {
-                if(!equalArrays(this.arrayStr,otherList.toArray())){
-                    equality=false;
+        } else {
+            for (int i = 0; i < numberOfElements - 1; i++) {
+                if (!equalArrays(this.arrayStr, otherList.toArray())) {
+                    equality = false;
                     break;
                 }
             }
