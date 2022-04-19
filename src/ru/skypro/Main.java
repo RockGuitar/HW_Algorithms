@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main ( String[] args ) {
-        StringListRealisation myArray = new StringListRealisation("emptySpace");
+        StringListRealisation myArray = new StringListRealisation();
 
 
         myArray.add("Item1");
@@ -20,6 +20,7 @@ public class Main {
         System.out.println(myArray.toString());
         myArray.remove("Item1");
         System.out.println(myArray.toString());
+        System.out.println(Arrays.toString(myArray.toArray()));
 
 //        myArray.add(3, "Item5");
 //        myArray.add(3, "Item6");

@@ -8,22 +8,12 @@ import ru.skypro.exceptions.ParameterIsNullException;
 import java.util.Arrays;
 
 public class StringListRealisation implements StringList {
-    public static int arraySize = 0;
+    public int arraySize = 0;
     public static int numberOfElements = 7;
-    public String emptySlot;
     public String[] arrayStr = new String[numberOfElements];
-    public StringListRealisation(String emptySlot){
-        this.emptySlot = emptySlot;
-        Arrays.fill(arrayStr,emptySlot);
-    }
-
-    @Override
-    public String toString () {
-        return "Contents of your array: " + Arrays.toString(arrayStr);
-    }
 
     public void checkItem ( String item ) {
-        if (item == null|item.equals(emptySlot)) {
+        if (item == null) {
             throw new ParameterIsNullException();
         }
     }
@@ -34,14 +24,14 @@ public class StringListRealisation implements StringList {
         }
     }
 
-    public static void checkSize () {
-        if (arraySize >= numberOfElements) {
+    public void checkSize () {
+        if (this.arraySize >= numberOfElements) {
             throw new ArrayIsFullException();
         }
     }
 
     public void checkIndexItem ( int index ) {
-        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
+        if (arrayStr[index] == null) {
             throw new ItemNotFoundException();
         }
     }
@@ -52,7 +42,7 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         checkSize();
         for (int i = 0; i < numberOfElements - 1; i++) {
-            if (arrayStr[i] == null|arrayStr[i].equals(emptySlot)) {
+            if (arrayStr[i] == null) {
                 arrayStr[i] = item;
                 arraySize++;
                 break;
@@ -64,7 +54,7 @@ public class StringListRealisation implements StringList {
     public String set ( int index, String item ) {
         checkItem(item);
         checkIndex(index);
-        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
+        if (arrayStr[index] == null) {
             arraySize++;
         }
         arrayStr[index] = item;
@@ -75,11 +65,11 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         checkIndex(index);
         checkSize();
-        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
+        if (arrayStr[index] == null) {
             set(index, item);
         } else {
             for (int i = index; i < numberOfElements - 1; i++) {
-                if (arrayStr[i + 1] == null|arrayStr[i+1].equals(emptySlot)) {
+                if (arrayStr[i + 1] == null) {
                     for (int j = i + 1; j > index; j--) {
                         arrayStr[j] = arrayStr[j - 1];
                     }
@@ -122,7 +112,7 @@ public class StringListRealisation implements StringList {
     public boolean contains ( String item ) {
         checkItem(item);
         for (String string : arrayStr) {
-            if (string == item) {
+            if (string.equals(item)) {
                 return true;
             }
         }
@@ -133,7 +123,7 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         int searchIndex = -1;
         for (int i = 0; i < numberOfElements - 1; i++) {
-            if (arrayStr[i] == item) {
+            if (arrayStr[i].equals(item)) {
                 searchIndex = i;
             }
         }
@@ -144,7 +134,7 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         int searchIndex = -1;
         for (int i = numberOfElements - 1; i > -1; i--) {
-            if (arrayStr[i] == item) {
+            if (arrayStr[i].equals(item)) {
                 searchIndex = i;
             }
         }
@@ -158,7 +148,6 @@ public class StringListRealisation implements StringList {
 
     public void clear () {
         arrayStr = new String[numberOfElements];
-        Arrays.fill(arrayStr,emptySlot);
         arraySize = 0;
     }
 
@@ -171,8 +160,8 @@ public class StringListRealisation implements StringList {
     }
 
     public String[] toArray () {
-        String[] otherArray = new String[numberOfElements];
-        for (int i = 0; i < numberOfElements - 1; i++) {
+        String[] otherArray = new String[this.arraySize];
+        for (int i = 0; i < otherArray.length; i++) {
             otherArray[i] = this.get(i);
         }
         return otherArray;
@@ -192,7 +181,7 @@ public class StringListRealisation implements StringList {
             return false;
         } else {
             for (int i = 0; i < numberOfElements - 1; i++) {
-                if (!equalArrays(this.arrayStr, otherList.toArray())) {
+                if (!equalArrays(arrayStr, otherList.toArray())) {
                     equality = false;
                     break;
                 }
@@ -200,6 +189,11 @@ public class StringListRealisation implements StringList {
         }
 
         return equality;
+    }
+
+    @Override
+    public String toString () {
+        return "Contents of your array: " + Arrays.toString(this.toArray());
     }
 
 }
