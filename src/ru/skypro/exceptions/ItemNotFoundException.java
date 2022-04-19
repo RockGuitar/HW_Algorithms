@@ -1,4 +1,4 @@
-package ru.skypro.Exceptions;
+package ru.skypro.exceptions;
 
 public class ItemNotFoundException extends RuntimeException{
 }

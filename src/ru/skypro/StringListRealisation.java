@@ -1,24 +1,29 @@
 package ru.skypro;
 
-import ru.skypro.Exceptions.ArrayIsFullException;
-import ru.skypro.Exceptions.IndexOutOfArrayLengthException;
-import ru.skypro.Exceptions.ItemNotFoundException;
-import ru.skypro.Exceptions.ParameterIsNullException;
+import ru.skypro.exceptions.ArrayIsFullException;
+import ru.skypro.exceptions.IndexOutOfArrayLengthException;
+import ru.skypro.exceptions.ItemNotFoundException;
+import ru.skypro.exceptions.ParameterIsNullException;
 
 import java.util.Arrays;
 
 public class StringListRealisation implements StringList {
     public static int arraySize = 0;
     public static int numberOfElements = 7;
+    public String emptySlot;
     public String[] arrayStr = new String[numberOfElements];
+    public StringListRealisation(String emptySlot){
+        this.emptySlot = emptySlot;
+        Arrays.fill(arrayStr,emptySlot);
+    }
 
     @Override
     public String toString () {
         return "Contents of your array: " + Arrays.toString(arrayStr);
     }
 
-    public static void checkItem ( String item ) {
-        if (item == null) {
+    public void checkItem ( String item ) {
+        if (item == null|item.equals(emptySlot)) {
             throw new ParameterIsNullException();
         }
     }
@@ -36,7 +41,7 @@ public class StringListRealisation implements StringList {
     }
 
     public void checkIndexItem ( int index ) {
-        if (arrayStr[index] == null) {
+        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
             throw new ItemNotFoundException();
         }
     }
@@ -47,7 +52,7 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         checkSize();
         for (int i = 0; i < numberOfElements - 1; i++) {
-            if (arrayStr[i] == null) {
+            if (arrayStr[i] == null|arrayStr[i].equals(emptySlot)) {
                 arrayStr[i] = item;
                 arraySize++;
                 break;
@@ -59,7 +64,7 @@ public class StringListRealisation implements StringList {
     public String set ( int index, String item ) {
         checkItem(item);
         checkIndex(index);
-        if (arrayStr[index] == null) {
+        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
             arraySize++;
         }
         arrayStr[index] = item;
@@ -70,11 +75,11 @@ public class StringListRealisation implements StringList {
         checkItem(item);
         checkIndex(index);
         checkSize();
-        if (arrayStr[index] == null) {
+        if (arrayStr[index] == null|arrayStr[index].equals(emptySlot)) {
             set(index, item);
         } else {
             for (int i = index; i < numberOfElements - 1; i++) {
-                if (arrayStr[i + 1] == null) {
+                if (arrayStr[i + 1] == null|arrayStr[i+1].equals(emptySlot)) {
                     for (int j = i + 1; j > index; j--) {
                         arrayStr[j] = arrayStr[j - 1];
                     }
@@ -153,6 +158,7 @@ public class StringListRealisation implements StringList {
 
     public void clear () {
         arrayStr = new String[numberOfElements];
+        Arrays.fill(arrayStr,emptySlot);
         arraySize = 0;
     }
 
